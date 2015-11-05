@@ -10,6 +10,7 @@ public class BluetoothPackageSolo implements Parcelable {
     int sensor2;
     int sensor3;
     String date;
+    // hello github
 
     public  BluetoothPackageSolo(int sensor1, String date){
         this.sensor1 = sensor1;
