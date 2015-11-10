@@ -15,7 +15,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 public class GraphActivity extends Activity {
     CustomGraph graphTemperatura;
     CustomGraph graphOxigeno;//    ArrayList<Object[]> graphData;
-    ArrayList<BluetoothPackageSolo> graphData;
+    ArrayList<GraphDataPackage> graphData;
     LineGraphSeries<DataPoint> seriesSensor1 = new LineGraphSeries<>( new DataPoint[]{} );
     LineGraphSeries<DataPoint> seriesSensor2 = new LineGraphSeries<>( new DataPoint[]{} );
 
@@ -33,7 +33,7 @@ public class GraphActivity extends Activity {
         }
         // TODO
 //        graphData = (ArrayList<Object[]>) TerminalData.get("graphData");
-        graphData = (ArrayList<BluetoothPackageSolo>) TerminalData.get("graphSomethin");
+        graphData = (ArrayList<GraphDataPackage>) TerminalData.get("graphSomethin");
 
         makeDayGraphSensor1();
         makeDayGraphSensor2();
@@ -45,8 +45,8 @@ public class GraphActivity extends Activity {
         graphTemperatura.setup(getString(R.string.TituloGraphSensor1), getString(R.string.GraphEjeHorozontal));
         graphTemperatura.set_Y_axis();
 
-        BluetoothPackageSolo firstElement = graphData.get(0);
-        BluetoothPackageSolo lastElement = graphData.get(graphData.size() - 1);
+        GraphDataPackage firstElement = graphData.get(0);
+        GraphDataPackage lastElement = graphData.get(graphData.size() - 1);
         int firstHour = convertToDay( firstElement.date );
         int lastHour =  convertToDay( lastElement.date);
 
@@ -79,8 +79,8 @@ public class GraphActivity extends Activity {
         graphOxigeno.setup(getString(R.string.TituloGraphSensor2), getString(R.string.GraphEjeHorozontal));
         graphOxigeno.set_Y_axis();
 
-        BluetoothPackageSolo firstElement2 = graphData.get(0);
-        BluetoothPackageSolo lastElement2 = graphData.get(graphData.size() - 1);
+        GraphDataPackage firstElement2 = graphData.get(0);
+        GraphDataPackage lastElement2 = graphData.get(graphData.size() - 1);
         int firstHour2 = convertToDay( firstElement2.date );
         int lastHour2 =  convertToDay( lastElement2.date);
 
@@ -108,7 +108,7 @@ public class GraphActivity extends Activity {
     }
 
     void setDayData(){
-        for (BluetoothPackageSolo line : graphData){
+        for (GraphDataPackage line : graphData){
             //TODO
             int dia = convertToDay( line.date);
             seriesSensor1.appendData(new DataPoint( dia , line.sensor1), true, 9999 );

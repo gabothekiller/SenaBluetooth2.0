@@ -3,26 +3,24 @@ package app.akexorcist.bluetoothspp;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-
-public class BluetoothPackageSolo implements Parcelable {
+public class GraphDataPackage implements Parcelable {
     int sensor1;
     int sensor2;
     int sensor3;
     String date;
     // hello github
 
-    public  BluetoothPackageSolo(int sensor1, String date){
+    public GraphDataPackage(int sensor1, String date){
         this.sensor1 = sensor1;
         this.date = date;
     }
 
-    public  BluetoothPackageSolo(int sensor1, int sensor2, String date){
+    public GraphDataPackage(int sensor1, int sensor2, String date){
         this.sensor1 = sensor1;
         this.sensor2 = sensor2;
         this.date = date;
     }
-    public  BluetoothPackageSolo(int sensor1, int sensor2, int sensor3, String date){
+    public GraphDataPackage(int sensor1, int sensor2, int sensor3, String date){
         this.sensor1 = sensor1;
         this.sensor2 = sensor2;
         this.sensor3 = sensor3;
@@ -39,18 +37,18 @@ public class BluetoothPackageSolo implements Parcelable {
         out.writeString(date);
     }
 
-    public static final Parcelable.Creator<BluetoothPackageSolo> CREATOR
-            = new Parcelable.Creator<BluetoothPackageSolo>() {
-        public BluetoothPackageSolo createFromParcel(Parcel in) {
-            return new BluetoothPackageSolo(in);
+    public static final Parcelable.Creator<GraphDataPackage> CREATOR
+            = new Parcelable.Creator<GraphDataPackage>() {
+        public GraphDataPackage createFromParcel(Parcel in) {
+            return new GraphDataPackage(in);
         }
 
-        public BluetoothPackageSolo[] newArray(int size) {
-            return new BluetoothPackageSolo[size];
+        public GraphDataPackage[] newArray(int size) {
+            return new GraphDataPackage[size];
         }
     };
 
-    private BluetoothPackageSolo(Parcel in) {
+    private GraphDataPackage(Parcel in) {
         sensor1 = in.readInt();
         sensor2 = in.readInt();
         date = in.readString();

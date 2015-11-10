@@ -36,7 +36,7 @@ public class TerminalActivity extends Activity {
     Bundle savedInstanceState;
 
 //    BluetoothPackage btPackage = new BluetoothPackage();
-    private ArrayList<BluetoothPackageSolo> graphData;
+    private ArrayList<GraphDataPackage> graphData;
     private TextView textStatus, textRead;
 
     private NumberPicker npDia, npMes, npAnual;
@@ -85,7 +85,7 @@ public class TerminalActivity extends Activity {
                     int sensor1 = Integer.valueOf(bluetoothData[0]);
                     int sensor2 = Integer.valueOf(bluetoothData[1]);
                     String date = bluetoothData[2];
-                    graphData.add(new BluetoothPackageSolo(sensor1, sensor2, date));
+                    graphData.add(new GraphDataPackage(sensor1, sensor2, date));
                 }
             }
         });
@@ -125,26 +125,26 @@ public class TerminalActivity extends Activity {
 
 
         if (savedInstanceState == null) {
-            graphData = new ArrayList<BluetoothPackageSolo>();
+            graphData = new ArrayList<GraphDataPackage>();
 
-            graphData.add(new BluetoothPackageSolo(15, 15,"14/10/2015-16:01"));
-            graphData.add(new BluetoothPackageSolo(16,"14/10/2015-16:02"));
-            graphData.add(new BluetoothPackageSolo(11,"14/10/2015-16:03"));
-            graphData.add(new BluetoothPackageSolo(18,"14/10/2015-16:04"));
-            graphData.add(new BluetoothPackageSolo(19,"14/10/2015-16:05"));
-            graphData.add(new BluetoothPackageSolo(11,"14/10/2015-16:08"));
-            graphData.add(new BluetoothPackageSolo(15,"14/10/2015-16:09"));
-            graphData.add(new BluetoothPackageSolo(16,"14/10/2015-16:10"));
-            graphData.add(new BluetoothPackageSolo(11,"14/10/2015-16:11"));
-            graphData.add(new BluetoothPackageSolo(18,"14/10/2015-16:12"));
-            graphData.add(new BluetoothPackageSolo(19,"14/10/2015-16:13"));
-            graphData.add(new BluetoothPackageSolo(11,15,  "14/10/2015-16:14"));
-            graphData.add(new BluetoothPackageSolo(12,"14/10/2015-16:15"));
-            graphData.add(new BluetoothPackageSolo(11,"14/10/2015-16:16"));
-            graphData.add(new BluetoothPackageSolo(11, 15,  "14/10/2015-16:17"));
-            graphData.add(new BluetoothPackageSolo(18,"14/10/2015-16:18"));
-            graphData.add(new BluetoothPackageSolo(11,"14/10/2015-16:19"));
-            graphData.add(new BluetoothPackageSolo(11, "14/10/2015-16:20"));
+            graphData.add(new GraphDataPackage(15, 15,"14/10/2015-16:01"));
+            graphData.add(new GraphDataPackage(16,"14/10/2015-16:02"));
+            graphData.add(new GraphDataPackage(11,"14/10/2015-16:03"));
+            graphData.add(new GraphDataPackage(18,"14/10/2015-16:04"));
+            graphData.add(new GraphDataPackage(19,"14/10/2015-16:05"));
+            graphData.add(new GraphDataPackage(11,"14/10/2015-16:08"));
+            graphData.add(new GraphDataPackage(15,"14/10/2015-16:09"));
+            graphData.add(new GraphDataPackage(16,"14/10/2015-16:10"));
+            graphData.add(new GraphDataPackage(11,"14/10/2015-16:11"));
+            graphData.add(new GraphDataPackage(18,"14/10/2015-16:12"));
+            graphData.add(new GraphDataPackage(19,"14/10/2015-16:13"));
+            graphData.add(new GraphDataPackage(11,15,  "14/10/2015-16:14"));
+            graphData.add(new GraphDataPackage(12,"14/10/2015-16:15"));
+            graphData.add(new GraphDataPackage(11,"14/10/2015-16:16"));
+            graphData.add(new GraphDataPackage(11, 15,  "14/10/2015-16:17"));
+            graphData.add(new GraphDataPackage(18,"14/10/2015-16:18"));
+            graphData.add(new GraphDataPackage(11,"14/10/2015-16:19"));
+            graphData.add(new GraphDataPackage(11, "14/10/2015-16:20"));
 
         } else {
             graphData = savedInstanceState.getParcelableArrayList("graphData");
