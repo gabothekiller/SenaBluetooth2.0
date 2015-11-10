@@ -62,7 +62,12 @@ public class GraphActivity extends Activity {
                     String str = String.valueOf(data);
                     try {
                         str = String.format("%04d", data);
-                        return str.substring(0, 2) + ":" + str.substring(2);
+                        String hour = str.substring(0, 2);
+                        String minute = str.substring(2);
+
+                        minute = String.valueOf(Integer.valueOf(minute) % 60);
+
+                        return hour + ":" + minute;
                     } catch (Exception e) {
                         return str;
                     }
