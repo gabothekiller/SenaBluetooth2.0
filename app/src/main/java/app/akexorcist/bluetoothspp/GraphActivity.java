@@ -4,8 +4,13 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
@@ -47,6 +52,7 @@ public class GraphActivity extends Activity {
 
         GraphDataPackage firstElement = graphData.get(0);
         GraphDataPackage lastElement = graphData.get(graphData.size() - 1);
+
         int firstHour = convertToDay( firstElement.date );
         int lastHour =  convertToDay( lastElement.date);
 
@@ -54,6 +60,7 @@ public class GraphActivity extends Activity {
         graphTemperatura.style();
         graphTemperatura.styleSeries(seriesSensor1, getString(R.string.TituloGraphSensor1), Color.BLUE);
         graphTemperatura.addSeries(seriesSensor1);
+        final DateFormat dateTimeFormatter = DateFormat.getDateTimeInstance();
         graphTemperatura.setFormatter(new DefaultLabelFormatter() {
             @Override
             public String formatLabel(double value, boolean isValueX) {
@@ -76,6 +83,26 @@ public class GraphActivity extends Activity {
                 }
             }
         });
+
+
+        int ultimoDato = graphData.get(graphData.size() - 1).sensor1;
+        if (ultimoDato < 12 ){
+            // letal
+            Toast.makeText(getApplicationContext(), " letal: temperatura en 12\u2103",
+                    Toast.LENGTH_LONG).show();
+        } else if ( ultimoDato < 15){
+            // critico
+            Toast.makeText(getApplicationContext(),  " critico: temperatura en 15\u2103",
+                    Toast.LENGTH_LONG).show();
+        } else if (ultimoDato <  25){
+            // alerta
+            Toast.makeText(getApplicationContext(), " alerta: temperatura por debajo de 25\u2103",
+                    Toast.LENGTH_LONG).show();
+        } else if (32 < ultimoDato  ){
+            // alerta
+            Toast.makeText(getApplicationContext(), " alerta: temperatura alta",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -110,12 +137,23 @@ public class GraphActivity extends Activity {
                 }
             }
         });
+
+        int ultimoDato = graphData.get(graphData.size() - 1).sensor2;
+        if (ultimoDato < 5 ){
+            // letal
+            Toast.makeText(getApplicationContext(), " alerta: nivel de oxigeno bajo\u2103",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     void setDayData(){
         for (GraphDataPackage line : graphData){
             //TODO
             int dia = convertToDay( line.date);
+
+            DateFormat hoursDateFormat = SimpleDateFormat.getTimeInstance();
+            SimpleDateFormat df = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
             seriesSensor1.appendData(new DataPoint( dia , line.sensor1), true, 9999 );
             seriesSensor2.appendData(new DataPoint( dia , line.sensor2), true, 9999 );
             Log.i(TAG, "sensor 1 : " + line.sensor1 + "    Sensor 2 : " + line.sensor2);
