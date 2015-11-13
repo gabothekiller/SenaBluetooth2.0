@@ -8,6 +8,8 @@ import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.util.Date;
+
 /**
  * Clase para configurar por igual a todos los graficos que se van
  * a hacer en la aplicacion.
@@ -20,12 +22,15 @@ public class CustomGraph{
 
     public CustomGraph(GraphView graph){
         this.graph = graph;
+        graph.getViewport().setScalable(true);
     }
 
     public void setup ( String title, String horizontalLabel ){
         // graph.setTitle( title );
         //graph.getViewport().setScalable(true);
         graph.getGridLabelRenderer().setHorizontalAxisTitle(horizontalLabel);
+        graph.getViewport().setScalable(true);
+        graph.getViewport().setScrollable(true);
     }
 
     public void style(){
@@ -50,11 +55,11 @@ public class CustomGraph{
         series.setTitle( title );
     }
 
-    public void set_X_Axis(int firstHour, int lastHour){
+    public void set_X_Axis(Date firstHour, Date lastHour){
         graph.getGridLabelRenderer().setNumHorizontalLabels(NUM_HORIZONTAL_LABELS);
+        graph.getViewport().setMinX(firstHour.getTime());
+        graph.getViewport().setMaxX(lastHour.getTime());
         graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMinX(firstHour);
-        graph.getViewport().setMaxX(lastHour);
     }
 
     public void set_Y_axis(){

@@ -149,40 +149,13 @@ public class TerminalActivity extends Activity {
         } else {
             graphData = savedInstanceState.getParcelableArrayList("graphData");
             textRead.setText(savedInstanceState.getString("textReadString"));
-/*
-            String btPreviousState = savedInstanceState.getString("DeviceAddress");
-            if (!btPreviousState.equals("None")){
-                Log.i(TAG, "------------onRestoreInstanceState");
-                Log.i(TAG, btPreviousState);
-
-                bt.setupService();
-                bt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
-                setup();
-                bt.connect(btPreviousState);
-
-                //bt.setupService();
-                //bt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
-                //setup();
-                //bt.connect( intent );
-            }*/
         }
     }
 
     @Override
     protected void onSaveInstanceState (Bundle savedInstanceState){
-//        savedInstanceState.putObjectArrayList("savedDataSeries", graphData);
-//        savedInstanceState.put
-        // LineGraphSeries<Datapoint> series
         savedInstanceState.putParcelableArrayList("graphData", graphData);
         savedInstanceState.putString("textReadString", textRead.getText().toString());
-
-/*
-        if(bt.getServiceState() == BluetoothState.STATE_CONNECTED) {
-            savedInstanceState.putString("DeviceAddress", bt.getmDeviceAddress()+"");
-            Log.i(TAG, "onSaveInstanceState");
-        } else {
-            savedInstanceState.putString("DeviceAddress", "None");
-        }*/
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -262,7 +235,7 @@ public class TerminalActivity extends Activity {
                 bt.disconnect();
         } else if (id == R.id.menu_drawgraph){
             if (graphData.size() >= 2 ) {
-                Intent intent = new Intent(this, GraphPrueba.class);
+                Intent intent = new Intent(this, GraphActivity.class);
                 intent.putExtra("graphData", graphData);
                 intent.putExtra("graphSomethin", graphData);
                 startActivity(intent);
@@ -293,13 +266,6 @@ public class TerminalActivity extends Activity {
                 bt.setupService();
                 bt.startService(BluetoothState.DEVICE_ANDROID);
                 setup();
-
-//                if (savedInstanceState != null){
-//                    String btPreviousState = savedInstanceState.getString("DeviceAddress");
-//                    if (!btPreviousState.equals("None")){
-//                        bt.connect(btPreviousState);
-//                    }
-//                }
             }
         }
     }

@@ -7,11 +7,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
@@ -45,31 +43,111 @@ public class GraphActivity extends Activity {
         makeDayGraphSensor1();
         makeDayGraphSensor2();
         setDayData();
+    }
 
-        DateFormat hoursDateFormat = SimpleDateFormat.getTimeInstance();
-        SimpleDateFormat df = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    private void makePrueba(){
+        // generate Dates
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR, 5);
+        calendar.set(Calendar.MINUTE, 30);
+        Date d1 = calendar.getTime();
+        calendar.add(Calendar.HOUR, 1);
+        Date d2 = calendar.getTime();
+        calendar.add(Calendar.HOUR, 1);
+        Date d3 = calendar.getTime();
+        calendar.add(Calendar.HOUR, 1);
+        Date d4 = calendar.getTime();
 
-        Log.i(TAG,  df.format(new Date(250, 10, 25, 14, 23) ));
+        Log.i(TAG, " TIME OF DATE = " + d1.getTime());
 
+        GraphView graph = (GraphView) findViewById(R.id.graphSensor1);
+
+        // you can directly pass Date objects to DataPoint-Constructor
+        // this will convert the Date to double via Date#getTime()
+//        seriesSensor1 = new LineGraphSeries<DataPoint>(new DataPoint[] {
+//                new DataPoint(d1, 1),
+//                new DataPoint(d2, 5),
+//                new DataPoint(d3, 3),
+//                new DataPoint(d4, 2)
+//        });
+        graph.addSeries(seriesSensor1);
+
+        DateFormat df = DateFormat.getTimeInstance(DateFormat.SHORT);
+
+        // set date label formatter
+        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this, df));
+        graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
+
+        // set manual x bounds to have nice steps
+        graph.getViewport().setMinX(d1.getTime());
+        graph.getViewport().setMaxX(d4.getTime());
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setScalable(true);
     }
 
     private void makeDayGraphSensor1(){
         graphTemperatura = new CustomGraph( (GraphView) findViewById(R.id.graphSensor1) );
         graphTemperatura.setup(getString(R.string.TituloGraphSensor1), getString(R.string.GraphEjeHorozontal));
-        graphTemperatura.set_Y_axis();
 
         GraphDataPackage firstElement = graphData.get(0);
         GraphDataPackage lastElement = graphData.get(graphData.size() - 1);
-        int firstHour = convertToDay( firstElement.date );
-        int lastHour =  convertToDay( lastElement.date);
-
-        //graphTemperatura.set_X_Axis(firstHour, lastHour);
-        //graphTemperatura.style();
+        graphTemperatura.set_X_Axis(convertToDay(firstElement.date), convertToDay(lastElement.date));
+        graphTemperatura.style();
 
         graphTemperatura.styleSeries(seriesSensor1, getString(R.string.TituloGraphSensor1), Color.BLUE);
         graphTemperatura.addSeries(seriesSensor1);
-        graphTemperatura.setFormatter(new DateAsXAxisLabelFormatter(this));
 
+        DateFormat df = DateFormat.getTimeInstance(DateFormat.SHORT);
+        graphTemperatura.setFormatter(new DateAsXAxisLabelFormatter(this, df));
+
+        NotificacionPeligroTemperatura();
+    }
+
+    private void makeDayGraphSensor2(){
+        graphOxigeno = new CustomGraph( (GraphView) findViewById(R.id.graphSensor2) );
+        graphOxigeno.setup(getString(R.string.TituloGraphSensor2), getString(R.string.GraphEjeHorozontal));
+        graphOxigeno.set_Y_axis();
+
+        GraphDataPackage firstElement2 = graphData.get(0);
+        GraphDataPackage lastElement2 = graphData.get(graphData.size() - 1);
+        graphOxigeno.set_X_Axis(convertToDay(firstElement2.date), convertToDay(lastElement2.date));
+        graphOxigeno.style();
+
+        graphOxigeno.styleSeries(seriesSensor2, getString(R.string.TituloGraphSensor2), Color.RED);
+        graphOxigeno.addSeries(seriesSensor2);
+
+        DateFormat df = DateFormat.getTimeInstance(DateFormat.SHORT);
+        graphOxigeno.setFormatter(new DateAsXAxisLabelFormatter(this, df));
+
+        NotificacionPeligroOxigeno();
+    }
+
+    void setDayData() {
+        for (GraphDataPackage line : graphData){
+            //TODO
+            Date hourOfDay = convertToDay(line.date);
+            seriesSensor1.appendData(new DataPoint( hourOfDay , line.sensor1), true, 9999 );
+            seriesSensor2.appendData(new DataPoint( hourOfDay , line.sensor2), true, 9999 );
+        }
+    }
+
+    private Date convertToDay(String date){
+        // DateAndHour = [ "15/10/2015" , "14:25"  ]
+        String[] DateAndHour  = date.split("-");
+        String[] HourAndMinute = DateAndHour[1].split(":");
+        String hour = HourAndMinute[0];
+        String minute = HourAndMinute[1];
+
+        //String formatMinute = String.format("%02d", Integer.valueOf(minute));
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(hour));
+        calendar.set(Calendar.MINUTE, Integer.valueOf(minute) );
+
+        return calendar.getTime();
+    }
+
+
+    private void NotificacionPeligroTemperatura(){
         int ultimoDato = graphData.get(graphData.size() - 1).sensor1;
         if (ultimoDato <= 12 ){
             // letal
@@ -90,77 +168,12 @@ public class GraphActivity extends Activity {
         }
     }
 
-
-    private void makeDayGraphSensor2(){
-        graphOxigeno = new CustomGraph( (GraphView) findViewById(R.id.graphSensor2) );
-        graphOxigeno.setup(getString(R.string.TituloGraphSensor2), getString(R.string.GraphEjeHorozontal));
-        graphOxigeno.set_Y_axis();
-
-        GraphDataPackage firstElement2 = graphData.get(0);
-        GraphDataPackage lastElement2 = graphData.get(graphData.size() - 1);
-        int firstHour2 = convertToDay( firstElement2.date );
-        int lastHour2 =  convertToDay( lastElement2.date);
-
-        graphOxigeno.set_X_Axis(firstHour2, lastHour2);
-        graphOxigeno.style();
-        graphOxigeno.styleSeries(seriesSensor2, getString(R.string.TituloGraphSensor2), Color.RED);
-        graphOxigeno.addSeries(seriesSensor2);
-        graphOxigeno.setFormatter(new DefaultLabelFormatter() {
-            @Override
-            public String formatLabel(double value, boolean isValueX) {
-                int data = (int) value;
-                if (isValueX) {
-                    String str = String.valueOf(data);
-                    try {
-                        str = String.format("%04d", data);
-                        return str.substring(0, 2) + ":" + str.substring(2);
-                    } catch (Exception e) {
-                        return str;
-                    }
-                } else {
-                    return String.format("%d ppm", data);
-                }
-            }
-        });
-
+    private void NotificacionPeligroOxigeno(){
         int ultimoDato = graphData.get(graphData.size() - 1).sensor2;
         if (ultimoDato <= 5 ){
             // letal
             Toast.makeText(getApplicationContext(), " alerta: nivel de oxigeno bajo", Toast.LENGTH_LONG).show();
         }
-    }
-
-    void setDayData() {
-        for (GraphDataPackage line : graphData){
-            //TODO
-            int dia = convertToDay( line.date);
-
-
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-
-            Date date;
-            try {
-                date = sdf.parse("12:20");
-            } catch (ParseException pe){
-                date = new Date();
-            }
-            seriesSensor1.appendData(new DataPoint( date , line.sensor1), true, 9999 );
-            seriesSensor2.appendData(new DataPoint( dia , line.sensor2), true, 9999 );
-
-            //seriesSensor1.appendData(new DataPoint( dia , line.sensor1), true, 9999 );
-            //seriesSensor2.appendData(new DataPoint( dia , line.sensor2), true, 9999 );
-            //Log.i(TAG, "sensor 1 : " + line.sensor1 + "    Sensor 2 : " + line.sensor2);
-        }
-    }
-
-    static int convertToDay(String date){
-        // DateAndHour = [ "15/10/2015" , "14:25"  ]
-        String[] DateAndHour  = date.split("-");
-        String[] HourAndMinute = DateAndHour[1].split(":");
-        String hour = HourAndMinute[0];
-        String minute = HourAndMinute[1];
-        String formatMinute = String.format("%02d", Integer.valueOf(minute));
-        return Integer.valueOf(hour + formatMinute);
     }
 }
 
