@@ -6,7 +6,6 @@ import android.os.Parcelable;
 public class GraphDataPackage implements Parcelable {
     int sensor1;
     int sensor2;
-    int sensor3;
     String date;
     // hello github
 
@@ -18,12 +17,6 @@ public class GraphDataPackage implements Parcelable {
     public GraphDataPackage(int sensor1, int sensor2, String date){
         this.sensor1 = sensor1;
         this.sensor2 = sensor2;
-        this.date = date;
-    }
-    public GraphDataPackage(int sensor1, int sensor2, int sensor3, String date){
-        this.sensor1 = sensor1;
-        this.sensor2 = sensor2;
-        this.sensor3 = sensor3;
         this.date = date;
     }
 

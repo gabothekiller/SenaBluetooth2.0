@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Locale;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -43,6 +45,12 @@ public class GraphActivity extends Activity {
         makeDayGraphSensor1();
         makeDayGraphSensor2();
         setDayData();
+
+        DateFormat hoursDateFormat = SimpleDateFormat.getTimeInstance();
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+        Log.i(TAG,  df.format(new Date(250, 10, 25, 14, 23) ));
+
     }
 
     private void makeDayGraphSensor1(){
@@ -52,53 +60,30 @@ public class GraphActivity extends Activity {
 
         GraphDataPackage firstElement = graphData.get(0);
         GraphDataPackage lastElement = graphData.get(graphData.size() - 1);
-
         int firstHour = convertToDay( firstElement.date );
         int lastHour =  convertToDay( lastElement.date);
 
-        graphTemperatura.set_X_Axis(firstHour, lastHour);
-        graphTemperatura.style();
+        //graphTemperatura.set_X_Axis(firstHour, lastHour);
+        //graphTemperatura.style();
+
         graphTemperatura.styleSeries(seriesSensor1, getString(R.string.TituloGraphSensor1), Color.BLUE);
         graphTemperatura.addSeries(seriesSensor1);
-        final DateFormat dateTimeFormatter = DateFormat.getDateTimeInstance();
-        graphTemperatura.setFormatter(new DefaultLabelFormatter() {
-            @Override
-            public String formatLabel(double value, boolean isValueX) {
-                int data = (int) value;
-                if (isValueX) {
-                    String str = String.valueOf(data);
-                    try {
-                        str = String.format("%04d", data);
-                        String hour = str.substring(0, 2);
-                        String minute = str.substring(2);
-
-                        minute = String.valueOf(Integer.valueOf(minute) % 60);
-
-                        return hour + ":" + minute;
-                    } catch (Exception e) {
-                        return str;
-                    }
-                } else {
-                    return String.format("%d \u2103",data);
-                }
-            }
-        });
-
+        graphTemperatura.setFormatter(new DateAsXAxisLabelFormatter(this));
 
         int ultimoDato = graphData.get(graphData.size() - 1).sensor1;
-        if (ultimoDato < 12 ){
+        if (ultimoDato <= 12 ){
             // letal
             Toast.makeText(getApplicationContext(), " letal: temperatura en 12\u2103",
                     Toast.LENGTH_LONG).show();
-        } else if ( ultimoDato < 15){
+        } else if ( ultimoDato <= 15){
             // critico
             Toast.makeText(getApplicationContext(),  " critico: temperatura en 15\u2103",
                     Toast.LENGTH_LONG).show();
-        } else if (ultimoDato <  25){
+        } else if (ultimoDato <=  25){
             // alerta
             Toast.makeText(getApplicationContext(), " alerta: temperatura por debajo de 25\u2103",
                     Toast.LENGTH_LONG).show();
-        } else if (32 < ultimoDato  ){
+        } else if (32 <= ultimoDato  ){
             // alerta
             Toast.makeText(getApplicationContext(), " alerta: temperatura alta",
                     Toast.LENGTH_LONG).show();
@@ -139,24 +124,32 @@ public class GraphActivity extends Activity {
         });
 
         int ultimoDato = graphData.get(graphData.size() - 1).sensor2;
-        if (ultimoDato < 5 ){
+        if (ultimoDato <= 5 ){
             // letal
-            Toast.makeText(getApplicationContext(), " alerta: nivel de oxigeno bajo\u2103",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), " alerta: nivel de oxigeno bajo", Toast.LENGTH_LONG).show();
         }
     }
 
-    void setDayData(){
+    void setDayData() {
         for (GraphDataPackage line : graphData){
             //TODO
             int dia = convertToDay( line.date);
 
-            DateFormat hoursDateFormat = SimpleDateFormat.getTimeInstance();
-            SimpleDateFormat df = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
-            seriesSensor1.appendData(new DataPoint( dia , line.sensor1), true, 9999 );
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+
+            Date date;
+            try {
+                date = sdf.parse("12:20");
+            } catch (ParseException pe){
+                date = new Date();
+            }
+            seriesSensor1.appendData(new DataPoint( date , line.sensor1), true, 9999 );
             seriesSensor2.appendData(new DataPoint( dia , line.sensor2), true, 9999 );
-            Log.i(TAG, "sensor 1 : " + line.sensor1 + "    Sensor 2 : " + line.sensor2);
+
+            //seriesSensor1.appendData(new DataPoint( dia , line.sensor1), true, 9999 );
+            //seriesSensor2.appendData(new DataPoint( dia , line.sensor2), true, 9999 );
+            //Log.i(TAG, "sensor 1 : " + line.sensor1 + "    Sensor 2 : " + line.sensor2);
         }
     }
 

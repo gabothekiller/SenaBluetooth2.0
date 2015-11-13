@@ -262,7 +262,7 @@ public class TerminalActivity extends Activity {
                 bt.disconnect();
         } else if (id == R.id.menu_drawgraph){
             if (graphData.size() >= 2 ) {
-                Intent intent = new Intent(this, GraphActivity.class);
+                Intent intent = new Intent(this, GraphPrueba.class);
                 intent.putExtra("graphData", graphData);
                 intent.putExtra("graphSomethin", graphData);
                 startActivity(intent);

@@ -24,7 +24,7 @@ public class CustomGraph{
 
     public void setup ( String title, String horizontalLabel ){
         // graph.setTitle( title );
-        graph.getViewport().setScalable(true);
+        //graph.getViewport().setScalable(true);
         graph.getGridLabelRenderer().setHorizontalAxisTitle(horizontalLabel);
     }
 
